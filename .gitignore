@@ -1,0 +1,5 @@
+node_modules
+js/*
+clients/public/js/*
+clients/public/potree
+clients/public/resources
