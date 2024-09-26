@@ -12,6 +12,8 @@ namespace Potree {
 
     class Viewer {
         scene: Scene;
+        renderer: any;
+        renderer: THREE.WebGLRenderer;
         constructor(element: HTMLElement);
 
         setPointBudget(budget: number): void;
@@ -21,6 +23,7 @@ namespace Potree {
         setBackground(color: string): void;
         fitToScreen(): void;
         loadSettingsFromURL(): void;
+        zoomTo(node, factor, animationDuration = 0): void;
     }
 
     class PointCloudEventVariable {
@@ -32,7 +35,9 @@ namespace Potree {
         material: PointCloudMaterial;
     }
     class Scene {
+        constructor(renderer: any);
         addPointCloud(pointcloud: PointCloud): void;
+        pointclouds: PointCloud[];
     }
     class PointCloudMaterial {
         size: number;
