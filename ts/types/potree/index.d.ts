@@ -12,7 +12,6 @@ namespace Potree {
 
     class Viewer {
         scene: Scene;
-        renderer: any;
         renderer: THREE.WebGLRenderer;
         constructor(element: HTMLElement);
 
@@ -30,6 +29,7 @@ namespace Potree {
         pointcloud: PointCloud;
     }
     class PointCloud {
+        name: string;
         position: THREE.Vector3;
         scale: THREE.Vector3;
         material: PointCloudMaterial;
@@ -38,11 +38,14 @@ namespace Potree {
         constructor(renderer: any);
         addPointCloud(pointcloud: PointCloud): void;
         pointclouds: PointCloud[];
+        scene: THREE.Scene;
+        scenePointCloud: THREE.Scene;
     }
     class PointCloudMaterial {
         size: number;
         pointSizeType: PointSizeType;
         shape: PointShape;
+        materials: THREE.WebGLMaterials;
     }
     function loadPointCloud(
         path: string,

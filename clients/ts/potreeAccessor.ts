@@ -1,7 +1,7 @@
 export class PotreeAccessor {
     private viewer: Potree.Viewer;
-    private scene: (Potree.Scene|null) = null;
 	private currentIndex = 0;
+	private lastPointCloud: Potree.PointCloud|null = null;
 	private urls = ["./resources/PotreeData/metadata.json",
 		"./resources/vol_total/cloud.js",
 		"http://localhost:3000/lion_takanawa_normals/cloud.js",
@@ -22,27 +22,37 @@ export class PotreeAccessor {
 			this.currentIndex += 1;
 			if(this.currentIndex >= this.urls.length) {
 				this.currentIndex = 0;
-				if(this.viewer.scene != null) {
-					this.viewer.scene = new Potree.Scene(this.viewer.renderer);
-				}
 			}
-			this.loadPointCloud(this.urls[this.currentIndex], false);
-		}, 1000);
+			this.clearLastPointCloud();
+			this.loadPointCloud(this.urls[this.currentIndex]!, false);
+		}, 3000);
         
-    }	
+    }
+	private clearLastPointCloud() {
+		if(this.lastPointCloud == null) {
+			return;
+		}
+		this.viewer.scene.scenePointCloud.remove(this.lastPointCloud);
+		
+		if(this.lastPointCloud.material?.materials != null) {
+			this.lastPointCloud.material.materials.forEach((m: { dispose: () => void; }) => {
+				m.dispose();
+			});
+		}
+		this.viewer.scene.pointclouds = this.viewer.scene.pointclouds.filter(p => p.name !== "cloud");
+
+	}
 	private loadPointCloud(cloudURL: string, fitToScreen: boolean) {
 		/**/
 		Potree.loadPointCloud(cloudURL, "cloud", e => {
-			this.scene = this.viewer.scene;
 			const pointcloud = e.pointcloud;
-
-			
 			const material = pointcloud.material;
 			material.size = 1;
 			material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
 			material.shape = Potree.PointShape.SQUARE;
-			
-			this.scene.addPointCloud(pointcloud);
+
+			this.viewer.scene.addPointCloud(pointcloud);
+			this.lastPointCloud = pointcloud;
 			
 			if (fitToScreen) {
 				this.viewer.fitToScreen();
