@@ -16,8 +16,17 @@ export class PotreeAccessor {
 		this.viewer.setFOV(60);
 		this.viewer.setPointBudget(1_000_000);
 		this.viewer.loadSettingsFromURL();
-		this.viewer.setBackground("black");
+		this.viewer.setBackground("");
 		this.loadPointCloud("http://localhost:3000/lion_takanawa_normals/cloud.js", true);
+		setInterval(() => {
+			if(this.lastPointCloud == null) {
+				return;
+			}
+			(this.lastPointCloud as any).rotation.x += 0.01;
+			(this.lastPointCloud as any).updateMatrixWorld();
+
+		},100)
+
 		setInterval(() => {
 			this.currentIndex += 1;
 			if(this.currentIndex >= this.urls.length) {
