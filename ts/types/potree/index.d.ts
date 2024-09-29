@@ -13,6 +13,7 @@ namespace Potree {
     class Viewer {
         scene: Scene;
         renderer: THREE.WebGLRenderer;
+        orbitControls: OrbitControls;
         constructor(element: HTMLElement);
 
         setPointBudget(budget: number): void;
@@ -26,18 +27,20 @@ namespace Potree {
     }
 
     class PointCloudEventVariable {
-        pointcloud: PointCloud;
+        pointcloud: PointCloudOctree;
     }
-    class PointCloud {
+    class PointCloudOctree {
         name: string;
         position: THREE.Vector3;
         scale: THREE.Vector3;
+        rotation: THREE.Vector3;
         material: PointCloudMaterial;
+        updateMatrixWorld(force: boolean = false): void;
     }
     class Scene {
         constructor(renderer: any);
-        addPointCloud(pointcloud: PointCloud): void;
-        pointclouds: PointCloud[];
+        addPointCloud(pointcloud: PointCloudOctree): void;
+        pointclouds: PointCloudOctree[];
         scene: THREE.Scene;
         scenePointCloud: THREE.Scene;
     }
@@ -46,6 +49,10 @@ namespace Potree {
         pointSizeType: PointSizeType;
         shape: PointShape;
         materials: THREE.WebGLMaterials;
+    }
+    class OrbitControls {
+        yawDelta: number;
+        pitchDelta: number;
     }
     function loadPointCloud(
         path: string,

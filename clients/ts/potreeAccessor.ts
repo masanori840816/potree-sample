@@ -1,7 +1,7 @@
 export class PotreeAccessor {
     private viewer: Potree.Viewer;
-	private currentIndex = 0;
-	private lastPointCloud: Potree.PointCloud|null = null;
+	private currentIndex = -1;
+	private lastPointCloud: Potree.PointCloudOctree|null = null;
 	private urls = ["./resources/PotreeData/metadata.json",
 		"./resources/vol_total/cloud.js",
 		"http://localhost:3000/lion_takanawa_normals/cloud.js",
@@ -18,25 +18,29 @@ export class PotreeAccessor {
 		this.viewer.loadSettingsFromURL();
 		this.viewer.setBackground("");
 		this.loadPointCloud("http://localhost:3000/lion_takanawa_normals/cloud.js", true);
-		setInterval(() => {
-			if(this.lastPointCloud == null) {
-				return;
-			}
-			(this.lastPointCloud as any).rotation.x += 0.01;
-			(this.lastPointCloud as any).updateMatrixWorld();
-
-		},100)
-
-		setInterval(() => {
+		requestAnimationFrame(() => this.rotatePointCloud());
+		
+		setTimeout(() => {
+		//setInterval(() => {
 			this.currentIndex += 1;
 			if(this.currentIndex >= this.urls.length) {
-				this.currentIndex = 0;
+				//this.currentIndex = 0;
+				return;
 			}
 			this.clearLastPointCloud();
 			this.loadPointCloud(this.urls[this.currentIndex]!, false);
 		}, 3000);
         
     }
+	private rotatePointCloud() {
+		requestAnimationFrame(() => this.rotatePointCloud());
+		this.viewer.orbitControls.yawDelta += 0.01;
+		/*if(this.lastPointCloud == null) {
+			return;
+		}
+		this.lastPointCloud.rotation.x += 0.01;
+		this.lastPointCloud.updateMatrixWorld();*/
+	}
 	private clearLastPointCloud() {
 		if(this.lastPointCloud == null) {
 			return;
