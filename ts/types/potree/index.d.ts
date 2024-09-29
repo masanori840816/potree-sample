@@ -38,7 +38,7 @@ namespace Potree {
         updateMatrixWorld(force: boolean = false): void;
     }
     class Scene {
-        constructor(renderer: any);
+        constructor(renderer: THREE.WebGLRenderer);
         addPointCloud(pointcloud: PointCloudOctree): void;
         pointclouds: PointCloudOctree[];
         scene: THREE.Scene;
